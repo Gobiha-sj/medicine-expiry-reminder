@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Form | MediTrack</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div class="form-page">
+
+    <header class="form-topbar">
+        <a th:href="@{/}" class="brand form-brand">
+            <span class="brand-icon">✚</span>
+            <span>
+                <strong>MediTrack</strong>
+                <small>Medicine Manager</small>
+            </span>
+        </a>
+        <a th:href="@{/}" class="back-link">← Back to dashboard</a>
+    </header>
+
+    <main class="form-container">
+        <div class="form-intro">
+            <span class="form-icon">✚</span>
+            <p class="eyebrow">MEDICINE INVENTORY</p>
+            <h1 th:text="${pageTitle}">Add Medicine</h1>
+            <p>Enter the medicine details below to maintain your inventory.</p>
+        </div>
+
+        <form th:action="@{/medicines/save}"
+              th:object="${medicine}"
+              method="post"
+              class="medicine-form">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="form-field">
+                <label for="name">Medicine Name *</label>
+                <input id="name" type="text" th:field="*{name}"
+                       placeholder="e.g. Paracetamol" required maxlength="100">
+            </div>
+
+            <div class="form-field">
+                <label for="category">Category *</label>
+                <select id="category" th:field="*{category}" required>
+                    <option value="">Select category</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Syrup">Syrup</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Ointment">Ointment</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="expiryDate">Expiry Date *</label>
+                <input id="expiryDate" type="date"
+                       th:field="*{expiryDate}" required>
+            </div>
+
+            <div class="form-field">
+                <label for="quantity">Quantity *</label>
+                <input id="quantity" type="number" th:field="*{quantity}"
+                       min="0" required placeholder="Enter quantity">
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/}" class="secondary-button">Cancel</a>
+                <button type="submit" class="primary-button">
+                    Save Medicine
+                </button>
+            </div>
+
+        </form>
+    </main>
+
+    <footer class="page-footer form-footer">
+        <span>© 2026 MediTrack</span>
+        <span>Keep your medicine records up to date.</span>
+    </footer>
+
+</div>
+
+</body>
+</html>

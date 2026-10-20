@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Expiry Reminder</title>
+
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">✚</div>
+            <div>
+                <h2>MediTrack</h2>
+                <p>Medicine Manager</p>
+            </div>
+        </div>
+
+        <p class="menu-label">WORKSPACE</p>
+
+        <a th:href="@{/}" class="nav-link active">
+            <span>▦</span> Dashboard
+        </a>
+
+        <a th:href="@{/medicines/new}" class="nav-link">
+            <span>＋</span> Add Medicine
+        </a>
+
+        <a th:href="@{/medicines/expiring}" class="nav-link">
+            <span>◷</span> Expiring Soon
+        </a>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-note">
+                <span class="note-icon">♡</span>
+                <h3>Stay safe</h3>
+                <p>Keep track of expiry dates and manage your medicines responsibly.</p>
+            </div>
+            <p class="sidebar-footer">MEDI TRACK · 2026</p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">MEDICINE MANAGEMENT</p>
+                <h1>Dashboard</h1>
+                <p class="subtitle">Keep your medicine cabinet safe and organized.</p>
+            </div>
+
+            <a th:href="@{/medicines/new}" class="primary-button">
+                <span>＋</span> Add Medicine
+            </a>
+        </header>
+
+        <div th:if="${successMessage}" class="alert success-alert"
+             th:text="${successMessage}"></div>
+
+        <div th:if="${errorMessage}" class="alert error-alert"
+             th:text="${errorMessage}"></div>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Total Medicines</span>
+                    <span class="stat-icon blue-icon">▦</span>
+                </div>
+                <h2 th:text="${total}">0</h2>
+                <p class="stat-description">Medicines in your inventory</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Expiring Soon</span>
+                    <span class="stat-icon orange-icon">◷</span>
+                </div>
+                <h2 th:text="${expiring}">0</h2>
+                <p class="stat-description">Expiring within 7 days</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Expired Medicines</span>
+                    <span class="stat-icon red-icon">!</span>
+                </div>
+                <h2 th:text="${expired}">0</h2>
+                <p class="stat-description">Past their expiry date</p>
+            </div>
+
+        </section>
+
+        <section class="table-card">
+
+            <div class="table-heading">
+                <div>
+                    <h2 th:text="${viewTitle != null ? viewTitle : 'Medicine Inventory'}">
+                        Medicine Inventory
+                    </h2>
+                    <p>View and manage your medicine records.</p>
+                </div>
+
+                <form th:action="@{/medicines/search}" method="get"
+                      class="search-form">
+                    <input type="text" name="name"
+                           placeholder="Search medicine..."
+                           th:value="${searchQuery}">
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>MEDICINE</th>
+                        <th>CATEGORY</th>
+                        <th>EXPIRY DATE</th>
+                        <th>QUANTITY</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="medicine : ${medicines}">
+                        <td>
+                            <div class="medicine-name">
+                                <span class="medicine-symbol">✚</span>
+                                <span th:text="${medicine.name}">Medicine name</span>
+                            </div>
+                        </td>
+
+                        <td th:text="${medicine.category}">Category</td>
+
+                        <td th:text="${medicine.expiryDate}">2026-12-31</td>
+
+                        <td>
+                            <span class="quantity-pill"
+                                  th:text="${medicine.quantity}">10</span>
+                        </td>
+
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="${medicine.status == 'Expired' ? ' status-expired' :
+                                  (medicine.status == 'Expiring Soon' ? ' status-warning' : ' status-safe')}"
+                                  th:text="${medicine.status}">Safe</span>
+                        </td>
+
+                        <td>
+                            <div class="action-buttons">
+                                <a class="edit-button"
+                                   th:href="@{/medicines/edit/{id}(id=${medicine.id})}">
+                                    Edit
+                                </a>
+
+                                <form th:action="@{/medicines/delete/{id}(id=${medicine.id})}"
+                                      method="post"
+                                      onsubmit="return confirm('Delete this medicine?');">
+                                    <button type="submit" class="delete-button">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(medicines)}">
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-icon">✚</div>
+                            <h3>No medicines found</h3>
+                            <p>Add a medicine to start managing expiry dates.</p>
+                            <a th:href="@{/medicines/new}" class="primary-button">
+                                Add your first medicine
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <span>Medicine inventory</span>
+                <a th:href="@{/}" class="clear-search">View all medicines →</a>
+            </div>
+
+        </section>
+
+        <footer class="page-footer">
+            <span>© 2026 MediTrack</span>
+            <span>Medicine expiry management system</span>
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>

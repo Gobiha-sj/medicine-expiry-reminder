@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expiring Soon | MedicineCare</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">✚</span>
+            <div>
+                <h2>Medicine<span>Care</span></h2>
+                <p>Expiry Reminder System</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/}" class="nav-link">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a th:href="@{/medicines/new}" class="nav-link">
+                <span>＋</span> Add Medicine
+            </a>
+            <a th:href="@{/medicines/expiring}" class="nav-link active">
+                <span>◷</span> Expiring Soon
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Medicine Expiry Reminder</p>
+            <small>Manage medicines safely</small>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Expiring Soon</h1>
+                <p>Track medicines approaching their expiry date.</p>
+            </div>
+            <a th:href="@{/}" class="btn btn-primary">
+                ← Dashboard
+            </a>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <p>Expiring Medicines</p>
+                    <h2 th:text="${medicines.size()}">0</h2>
+                    <small>Within the next 7 days</small>
+                </div>
+                <div class="stat-icon">◷</div>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <div class="table-header">
+                <div>
+                    <h2>Medicines Near Expiry</h2>
+                    <p>Review these medicines and check their expiry dates.</p>
+                </div>
+                <a th:href="@{/medicines/new}" class="btn btn-primary">
+                    + Add Medicine
+                </a>
+            </div>
+
+            <div class="table-container"
+                 th:if="${!medicines.isEmpty()}">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Medicine Name</th>
+                        <th>Category</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Days Left</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="medicine : ${medicines}">
+                        <td th:text="${medicine.id}">1</td>
+                        <td>
+                            <strong th:text="${medicine.name}">Medicine</strong>
+                        </td>
+                        <td th:text="${medicine.category}">Tablet</td>
+                        <td th:text="${medicine.expiryDate}">2026-10-22</td>
+                        <td th:text="${medicine.quantity}">10</td>
+                        <td>
+                            <span th:text="${medicine.daysLeft}">2</span>
+                        </td>
+                        <td>
+                            <span class="status-badge"
+                                  th:text="${medicine.status}">Expiring Soon</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" th:if="${medicines.isEmpty()}">
+                <div class="empty-icon">✓</div>
+                <h3>You're all caught up!</h3>
+                <p>No medicines are expiring within the next 7 days.</p>
+                <a th:href="@{/}" class="btn btn-primary">
+                    Back to Dashboard
+                </a>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>
